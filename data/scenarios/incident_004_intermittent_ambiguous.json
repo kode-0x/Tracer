@@ -1,0 +1,47 @@
+{
+  "incident_id": "INC-004",
+  "title": "Intermittent latency spikes on checkout flow",
+  "service": "checkout-service",
+  "severity": "MEDIUM",
+  "description": "Transient latency spikes reported by end users intermittently. Probe telemetry shows healthy snapshot metrics across all components.",
+  "ground_truth": "inconclusive",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "name": "Incorrect payment endpoint",
+      "description": "Configuration drift or stale cached DNS entry.",
+      "recommended_action": "Verify DNS TTL values and flush client connection pool caches."
+    },
+    {
+      "id": "H2",
+      "name": "Payment provider outage",
+      "description": "Intermittent packet loss or throttling on payment provider gateway.",
+      "recommended_action": "Enable detailed debug tracing on outbound payment calls to capture transient network packet loss."
+    },
+    {
+      "id": "H3",
+      "name": "Database failure",
+      "description": "Periodic garbage collection or background vacuum causing lock stalls.",
+      "recommended_action": "Profile database autovacuum schedule and monitor lock wait times during peak intervals."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "source": "monitoring_alert",
+      "observation": "Intermittent 99th percentile latency alert fired twice in the last hour, then recovered.",
+      "effects": {}
+    },
+    {
+      "id": "E2",
+      "source": "customer_support",
+      "observation": "2 users reported slow checkout page load; subsequent retries succeeded.",
+      "effects": {}
+    }
+  ],
+  "diagnostic_results": {
+    "payment_config": "valid",
+    "payment_provider_status": "healthy",
+    "database_health": "healthy"
+  }
+}

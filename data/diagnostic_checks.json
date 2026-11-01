@@ -1,0 +1,52 @@
+{
+  "checks": [
+    {
+      "id": "T1",
+      "name": "Validate payment configuration",
+      "description": "Compare the configured payment endpoint with the expected endpoint.",
+      "required_evidence": ["payment_config"],
+      "possible_results": ["valid", "invalid"],
+      "helps_distinguish": ["H1", "H2"],
+      "result_effects": {
+        "valid": {
+          "H1": "contradicts"
+        },
+        "invalid": {
+          "H1": "supports"
+        }
+      }
+    },
+    {
+      "id": "T2",
+      "name": "Check payment provider",
+      "description": "Inspect the payment provider's health status via upstream ping.",
+      "required_evidence": ["payment_provider_status"],
+      "possible_results": ["healthy", "unhealthy"],
+      "helps_distinguish": ["H1", "H2"],
+      "result_effects": {
+        "healthy": {
+          "H2": "contradicts"
+        },
+        "unhealthy": {
+          "H2": "supports"
+        }
+      }
+    },
+    {
+      "id": "T3",
+      "name": "Check database health",
+      "description": "Inspect database connectivity, pool saturation, and query latency.",
+      "required_evidence": ["database_health"],
+      "possible_results": ["healthy", "unhealthy"],
+      "helps_distinguish": ["H1", "H3"],
+      "result_effects": {
+        "healthy": {
+          "H3": "contradicts"
+        },
+        "unhealthy": {
+          "H3": "supports"
+        }
+      }
+    }
+  ]
+}

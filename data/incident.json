@@ -1,0 +1,57 @@
+{
+  "incident_id": "INC-001",
+  "title": "Checkout service failures",
+  "service": "checkout-service",
+  "severity": "CRITICAL",
+  "description": "The checkout endpoint started failing shortly after a deployment.",
+  "ground_truth": "H1",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "name": "Incorrect payment endpoint",
+      "description": "The latest deployment introduced an invalid payment API endpoint.",
+      "recommended_action": "Compare the payment endpoint in version 1.8 with the last known-good version, and verify it against the provider's documented endpoint."
+    },
+    {
+      "id": "H2",
+      "name": "Payment provider outage",
+      "description": "The external payment provider is unavailable or failing.",
+      "recommended_action": "Check provider status dashboard, engage payment gateway vendor support, or trigger emergency fallback gateway routing."
+    },
+    {
+      "id": "H3",
+      "name": "Database failure",
+      "description": "Database connectivity or queries are causing checkout failures.",
+      "recommended_action": "Inspect PostgreSQL connection pool metrics, check for deadlocks, and restart saturated read replicas if necessary."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "source": "deployment_log",
+      "observation": "Version 1.8 was deployed at 10:00.",
+      "effects": {
+        "H1": "supports"
+      }
+    },
+    {
+      "id": "E2",
+      "source": "application_log",
+      "observation": "Checkout failures began at 10:05.",
+      "effects": {}
+    },
+    {
+      "id": "E3",
+      "source": "database_health",
+      "observation": "Database connections and queries are healthy.",
+      "effects": {
+        "H3": "contradicts"
+      }
+    }
+  ],
+  "diagnostic_results": {
+    "payment_config": "invalid",
+    "payment_provider_status": "healthy",
+    "database_health": "healthy"
+  }
+}

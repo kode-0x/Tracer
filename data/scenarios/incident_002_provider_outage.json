@@ -1,0 +1,59 @@
+{
+  "incident_id": "INC-002",
+  "title": "Payment gateway 504 gateway timeout",
+  "service": "payment-gateway",
+  "severity": "HIGH",
+  "description": "Checkout transactions are timing out after 30 seconds when attempting to reach the payment processor.",
+  "ground_truth": "H2",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "name": "Incorrect payment endpoint",
+      "description": "The service is configured with an invalid payment gateway URL.",
+      "recommended_action": "Verify application endpoint environment variables against API specification."
+    },
+    {
+      "id": "H2",
+      "name": "Payment provider outage",
+      "description": "The external payment processor is experiencing an outage or high latency.",
+      "recommended_action": "Check provider status page, enable automatic circuit breaker failover to secondary processor, and alert on-call payments lead."
+    },
+    {
+      "id": "H3",
+      "name": "Database failure",
+      "description": "Database locks or slow queries are blocking payment processing threads.",
+      "recommended_action": "Inspect active transactions in database and terminate orphaned locks."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "source": "deployment_log",
+      "observation": "No deployments or configuration changes in the last 48 hours.",
+      "effects": {
+        "H1": "contradicts"
+      }
+    },
+    {
+      "id": "E2",
+      "source": "application_log",
+      "observation": "High rate of HTTP 504 Gateway Timeout errors when invoking external provider API.",
+      "effects": {
+        "H2": "supports"
+      }
+    },
+    {
+      "id": "E3",
+      "source": "database_health",
+      "observation": "PostgreSQL replication lag is 0s, CPU utilization is 12%.",
+      "effects": {
+        "H3": "contradicts"
+      }
+    }
+  ],
+  "diagnostic_results": {
+    "payment_config": "valid",
+    "payment_provider_status": "unhealthy",
+    "database_health": "healthy"
+  }
+}

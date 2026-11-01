@@ -1,0 +1,55 @@
+{
+  "incident_id": "INC-003",
+  "title": "Order submission timeout & connection pool exhaustion",
+  "service": "order-processing-service",
+  "severity": "CRITICAL",
+  "description": "Order processing queue latency escalated sharply and checkout requests are failing with database connection acquisition errors.",
+  "ground_truth": "H3",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "name": "Incorrect payment endpoint",
+      "description": "Payment endpoint routing table is misconfigured.",
+      "recommended_action": "Audit service mesh routing and DNS resolution for payment endpoint."
+    },
+    {
+      "id": "H2",
+      "name": "Payment provider outage",
+      "description": "Payment gateway is unresponsive.",
+      "recommended_action": "Check external processor SLA status and engage merchant support."
+    },
+    {
+      "id": "H3",
+      "name": "Database failure",
+      "description": "Database connection pool exhausted or queries blocking transactions.",
+      "recommended_action": "Identify and terminate long-running blocked database queries, cycle saturated connection pool instances, and review database max_connections limit."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "source": "application_log",
+      "observation": "HikariPool-1 connection acquisition timeout: 30000ms elapsed with 0 free connections.",
+      "effects": {
+        "H3": "supports"
+      }
+    },
+    {
+      "id": "E2",
+      "source": "deployment_log",
+      "observation": "No recent application deployments recorded.",
+      "effects": {}
+    },
+    {
+      "id": "E3",
+      "source": "payment_provider_health",
+      "observation": "External provider webhook callbacks and status pings respond in 45ms.",
+      "effects": {}
+    }
+  ],
+  "diagnostic_results": {
+    "payment_config": "valid",
+    "payment_provider_status": "healthy",
+    "database_health": "unhealthy"
+  }
+}
