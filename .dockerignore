@@ -1,0 +1,49 @@
+# ── Version control ────────────────────────────────────────────────────────
+.git/
+.gitignore
+
+# ── Python caches and compiled bytecode ───────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Virtual environments ───────────────────────────────────────────────────
+.venv/
+venv/
+env/
+.env/
+
+# ── Local environment / secrets ───────────────────────────────────────────
+.env
+.env.*
+*.local
+
+# ── Node artifacts (Stage 1 installs fresh inside Docker) ─────────────────
+frontend/node_modules/
+node_modules/
+
+# ── Pre-built dist (Stage 1 rebuilds this inside Docker) ──────────────────
+frontend/dist/
+
+# ── Tests (not needed at runtime) ─────────────────────────────────────────
+tests/
+
+# ── Editor and OS artifacts ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# ── Docker files themselves (no need to copy into image) ──────────────────
+Dockerfile
+.dockerignore
+
+# ── Docs (not needed at runtime) ──────────────────────────────────────────
+README.md
+*.md
